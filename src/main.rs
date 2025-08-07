@@ -1,27 +1,26 @@
 mod parser;
 mod ir;
+
+use std::env;
+use std::fs::File;
+use std::io::{self, Read};
 use serde_json::json;
 
-fn main() {
-    println!("CatAssembly Transpiler.");
-    /*let mystr = "
-        
-        event WhenWebsiteLoaded(): log(\"hello wordl!\");
-        event WhenWebsiteLoaded(): {
-            wait(1); err(\"startin the day with an error\");
-        }
-        event WhenWebsiteLoaded(): {
-            set(variable, \"if you can see this text variables are FUNCTIONAL\");
-            log(variable);
-        }
-        ";*/
+fn main() -> io::Result<()> {
 
-    let mystr = "event WhenWebsiteLoaded(): repeat 3 {
-        wait(1);
-        log(\"do repeattimes work???\");
-        break;
-    }";
-    let tokenized = parser::tokenize(mystr);
+    let args: Vec<String> = env::args().collect();
+    println!("CatAssembly Transpiler.");
+    
+    // env::args() includes program name
+    if args.len() != 2 { panic!("the transpiler takes one arg") }
+    
+    let mut file = File::open( args[1].clone() )?;
+    let mut filecontents = String::new();
+    file.read_to_string(&mut filecontents)?;
+
+    println!("compiling...");
+
+    let tokenized = parser::tokenize(filecontents);
     println!("{} tokens in code", tokenized.len());
    
 
@@ -34,4 +33,6 @@ fn main() {
 
     println!("\n !!! THE TRANSPILER DOESN'T CHECK IF THE SCRIPT YOU HAVE CREATED WILL ERROR OUT AT RUNTIME !!! \n");
     println!("{}\n\n", stringified);
+
+    Ok(())
 }

@@ -77,7 +77,7 @@ fn parse_word(firstchar: char, chars: &mut Peekable<Chars<'_>>) -> Token {
     Token::Word(word)
 }
 
-pub fn tokenize(source: &str) -> Vec<Token> {
+pub fn tokenize(source: String) -> Vec<Token> {
     let mut tokens = Vec::new();
     let mut chars = source.chars().peekable();
 

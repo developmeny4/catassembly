@@ -15,6 +15,21 @@ check it out pls its very very cool
 and check the wbesite for catassembly (inside of catweb) its `asm.rbx`
 tysm
 
+# USAGE
+
+you should compile the codebase first. you can use the command `cargo run` or `cargo build`.
+the command `cargo run` is better if you're trying to contribute and testing if your code works.
+the command `cargo build` is better if you're going to use the code normally.
+
+after it compiles, a file called "target" should occur. you can rename it, use it, whatever.
+to use it :
+```
+./target example.cwa
+```
+note : you might need to give the file exec permissions.
+
+you can import the transpiled code into your website
+
 # SYNTAX
 
 ## declare events
@@ -81,7 +96,8 @@ currently implemented :
 - add compile-time macros
 - add compile-time optimizations
 - add simple error checking
-- add the ability to read files
+- ~~add the ability to read files~~
+- add comment support
 
 its also kinda outdated since i started creating this before the mega update and never touched it since??? idk
 
