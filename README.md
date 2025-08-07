@@ -7,6 +7,10 @@ its for a game in roblox. "CatWeb".
 
 https://www.roblox.com/games/16855862021/CatWeb-Make-a-Website
 
+and the discord server
+
+https://discord.gg/XS9qtShkRz
+
 check it out pls its very very cool
 and check the wbesite for catassembly (inside of catweb) its `asm.rbx`
 tysm
