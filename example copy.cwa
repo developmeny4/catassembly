@@ -1,0 +1,17 @@
+event WhenWebsiteLoaded(): {
+	log("greetings");
+	set(var, 3);
+	repeat var {
+		add(var, 1);
+		log("var is currently at {var}");
+	}
+	
+	set(var2, -5);
+
+	loop {
+		wait(1);
+		log("var2 is currently at {var2}");
+		add(var2, var);
+	}
+	err("loop ended (THIS SHOULD NOT HAPPEN)");
+}

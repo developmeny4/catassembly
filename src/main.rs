@@ -18,6 +18,8 @@ fn main() -> io::Result<()> {
     let mut filecontents = String::new();
     file.read_to_string(&mut filecontents)?;
 
+    let templates = parser::load_templates(); // caches
+
     println!("compiling...");
 
     let tokenized = parser::tokenize(filecontents);

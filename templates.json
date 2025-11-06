@@ -1,0 +1,11 @@
+{
+    "actions": {
+        "log": {
+            "id":"0",
+            "text":["Log",{"value":"=arg1=","t":"any"}]
+        }
+    },
+    "events": {
+        "not necessary": "for now"
+    }
+}

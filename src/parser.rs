@@ -1,5 +1,9 @@
 use std::iter::Peekable;
 use std::str::Chars;
+use serde::Deserialize;
+use serde_json::{json, Value};
+use std::{collections::HashMap, fs};
+use once_cell::sync::OnceCell;
 
 #[derive(PartialEq)]
 pub enum Token {
@@ -64,11 +68,54 @@ fn parse_string(quote: char, chars: &mut Peekable<Chars<'_>>) -> Token {
     Token::StringLiteral(content)
 }
 
+#[derive(serde::Deserialize)]
+pub struct TemplateFile {
+    pub actions: HashMap<String, Value>,
+    pub events: HashMap<String, Value>,
+}
+
+pub fn load_templates() -> &'static TemplateFile {
+    static CACHE: OnceCell<TemplateFile> = OnceCell::new();
+
+    CACHE.get_or_init(|| {
+        let data = std::fs::read_to_string("templates.json")
+            .expect("failed to read template file");
+        serde_json::from_str(&data)
+            .expect("invalid json template")
+    })
+}
+
+pub fn substitute_args(template: &Value, args: &[String]) -> Value {
+    match template {
+        Value::String(s) => {
+            let mut result = s.clone();
+            for (i, arg) in args.iter().enumerate() {
+                let placeholder = format!("=arg{}=", i + 1);
+                result = result.replace(&placeholder, arg);
+            }
+            Value::String(result)
+        }
+        Value::Array(arr) => {
+            Value::Array(arr.iter().map(|v| substitute_args(v, args)).collect())
+        }
+        Value::Object(obj) => {
+            let mut new_obj = serde_json::Map::new();
+            for (k, v) in obj {
+                new_obj.insert(k.clone(), substitute_args(v, args));
+            }
+            Value::Object(new_obj)
+        }
+        _ => template.clone(),
+    }
+}
+
 fn parse_word(firstchar: char, chars: &mut Peekable<Chars<'_>>) -> Token {
     let mut word = firstchar.to_string();
     
     while let Some(&ch) = chars.peek() {
-        if ch.is_alphanumeric() || ch == '_' || ch == '-' { word.push(ch) }
+        if ch.is_alphanumeric() || ch == '_' ||
+            ch == '-' || ch == '!' || ch == '.' 
+            { word.push(ch) }
         else { break };
 
         chars.next();
