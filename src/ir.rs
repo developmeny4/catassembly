@@ -22,7 +22,7 @@ pub struct EventNode {
 }
 
 pub struct CompileTimeAppIR {
-    events: Vec<EventNode>
+    events: Vec<serde_json::Value>
 }
 
 fn parse_single_arg(iter: &mut Peekable<impl Iterator<Item = parser::Token>>) -> String {
@@ -96,7 +96,7 @@ fn parse_base(iter: &mut Peekable<impl Iterator<Item = parser::Token>>) -> serde
     }
 }
 
-fn parse_inside(iter: &mut Peekable<impl Iterator<Item = parser::Token>>) -> Vec<serde_json::Value> {
+fn parse_inside(iter: &mut Peekable<impl Iterator<Item = parser::Token>>) -> serde_json::Value {
     let mut code: Vec<serde_json::Value> = Vec::new();
 
     if iter.peek() == Some(&parser::Token::LeftBrace) {
@@ -114,12 +114,12 @@ fn parse_inside(iter: &mut Peekable<impl Iterator<Item = parser::Token>>) -> Vec
         code.push(parse_base(iter));
     }
 
-    code
+    serde_json::json!(code)
 }
 
-fn parse_event(iter: &mut Peekable<impl Iterator<Item = parser::Token>>) -> EventNode {
+fn parse_event(iter: &mut Peekable<impl Iterator<Item = parser::Token>>) -> serde_json::Value {
     let event_token = match iter.next() {
-        Some(parser::Token::Word(val)) => val,
+        Some(parser::Token::Word(name)) => name,
         _ => panic!("Expected event name as word"),
     };
 
@@ -131,10 +131,13 @@ fn parse_event(iter: &mut Peekable<impl Iterator<Item = parser::Token>>) -> Even
 
     let actions_json = parse_inside(iter);
 
-    EventNode {
-        eventString,
-        code: serde_json::json!(actions_json),
-    }
+    // get template
+    let template = parser::load_templates();
+    let mut code = parser::substitute_args(&template.events[&event_token], &args);
+
+    code["actions"] = actions_json;
+
+    serde_json::json!(code)
 }
 
 pub fn parse_code(code: Vec<parser::Token>) -> CompileTimeAppIR {
@@ -157,35 +160,6 @@ pub fn parse_code(code: Vec<parser::Token>) -> CompileTimeAppIR {
 pub fn jsonify(app: CompileTimeAppIR) -> serde_json::Value {
     json!([{
         "class": "script",
-        "content": app.events.iter().enumerate().map(|(i, event)| {
-            // these can not go in the json directly for some reason
-            let (text, id) = match &event.eventString {
-                Events::WhenWebsiteLoaded => (
-                    json!(["When website loaded..."]),
-                    json!("0")
-                ),
-                Events::WhenButtonPressed(button) => (
-                    json!([
-                        "When",
-                        {"value": button, "l": "button", "t": "object"},
-                        "pressed..."
-                    ]),
-                    json!("1")
-                ),
-                _ => panic!("idk what this event means in json")
-            };
-
-            let actions: &serde_json::Value = &event.code;
-
-
-            json!({
-                "id": id,
-                "x": (4780 + (i * 410)).to_string(),
-                "y": "4780",
-                "width": "400",
-                "text": text,
-                "actions": actions
-            })
-        }).collect::<Vec<_>>()
+        "content": serde_json::json!(app.events)
     }])
 }

@@ -6,6 +6,9 @@
         }
     },
     "events": {
-        "not necessary": "for now"
+        "WhenWebsiteLoaded": {
+            "id":"0",
+            "text":["When website loaded..."]
+        }
     }
 }

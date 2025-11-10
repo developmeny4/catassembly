@@ -101,6 +101,4 @@ currently implemented :
 
 its also kinda outdated since i started creating this before the mega update and never touched it since??? idk
 
-life is cruel i deleted half of the code to rewrite later now nothing works silly me haha
-
 i would really appreciate it if you contribute (copy paste is boring and almost the entire job is copy pasting now)

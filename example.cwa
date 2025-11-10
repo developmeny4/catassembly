@@ -1,3 +1,7 @@
 event WhenWebsiteLoaded(): {
 	log("greetings");
 }
+
+event WhenWebsiteLoaded(): {
+	log("greetings");
+}
