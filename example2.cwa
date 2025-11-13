@@ -1,3 +1,14 @@
+// the script, when imported properly should log these :
+
+// greetings
+// var is currently at 4
+// var is currently at 5
+// var is currently at 6
+// var2 is currently at -5
+// var2 is currently at 1
+// var2 is currently at 7
+// ...
+
 event WhenWebsiteLoaded(): {
 	log("greetings");
 	set(var, 3);

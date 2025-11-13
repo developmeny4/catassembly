@@ -42,7 +42,7 @@ fn parse_number(first: char, chars: &mut Peekable<Chars<'_>>) -> Token {
     }
 
     let parsed = num_str.parse::<f64>().unwrap_or_else(|_| {
-        panic!("idk what a '{}' is. ain't no number for sure", num_str)
+        panic!("'{}' is not a number, if you wanted it to be a word make sure it doesn't start with a digit", num_str)
     });
 
     Token::Number(parsed)
@@ -124,6 +124,16 @@ fn parse_word(firstchar: char, chars: &mut Peekable<Chars<'_>>) -> Token {
     Token::Word(word)
 }
 
+fn comments(chars: &mut Peekable<Chars<'_>>) {
+    if chars.next() != Some('/') {
+        panic!("didn't expect '/'");
+    }
+
+    while chars.next() != Some('\n') {
+        continue
+    }
+}
+
 pub fn tokenize(source: String) -> Vec<Token> {
     let mut tokens = Vec::new();
     let mut chars = source.chars().peekable();
@@ -134,6 +144,7 @@ pub fn tokenize(source: String) -> Vec<Token> {
             '"' | '\'' => tokens.push(parse_string(ch, &mut chars)),
             '0'..='9' => tokens.push(parse_number(ch, &mut chars)),
             'a'..='z' | 'A'..='Z' => tokens.push(parse_word(ch, &mut chars)),
+            '/' => comments(&mut chars),
             '(' => tokens.push(Token::LeftParen),
             ')' => tokens.push(Token::RightParen),
             ';' => tokens.push(Token::Semicolon),

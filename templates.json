@@ -1,14 +1,56 @@
 {
     "actions": {
+        "if_exists": {
+            "loop": false,
+            "if_variant": true,
+            "argc": 1,
+            "code": {
+                "id": "92",
+                "text": [
+                    "If",
+                    {
+                        "t": "string",
+                        "l": "variable",
+                        "value": "=arg1="
+                    },
+                    "exists"
+                ]
+            }
+        },
         "log": {
-            "id":"0",
-            "text":["Log",{"value":"=arg1=","t":"any"}]
+            "if_variant": false,
+            "loop": false,
+            "argc": 1,
+            "code": {
+                "id": "0",
+                "text": [
+                    "Log",
+                    {
+                        "t": "any",
+                        "v": "=arg1="
+                    }
+                ]
+            }
+        },
+        "end": {
+            "loop": false,
+            "if_variant": false,
+            "argc": -1,
+            "code": {
+                "id": "25",
+                "text": [
+                    "end"
+                ]
+            }
         }
     },
     "events": {
         "WhenWebsiteLoaded": {
-            "id":"0",
-            "text":["When website loaded..."]
+            "argc": 0,
+            "code": {
+                "id":"0",
+                "text":["When website loaded..."]
+            }
         }
     }
 }

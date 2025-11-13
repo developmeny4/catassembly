@@ -1,0 +1,5 @@
+event WhenWebsiteLoaded(): {
+    if_exists(variable): {
+        log("hello");
+    }
+}
